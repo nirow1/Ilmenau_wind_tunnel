@@ -14,7 +14,7 @@ class TlaskanControl(QThread):
         super().__init__()
         self.port = 23
         self.connected = False
-        self.ip = "192.168.1.96"
+        self.ip = "192.168.1.98"
         self.tlaskan_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.zero_velocity = 0
 
@@ -54,10 +54,10 @@ class TlaskanControl(QThread):
             del msg[-1:]
 
             if len(msg) != 0:
-                self.tlaskan_data[2] = float(msg[0].decode('utf-8'))  # ATM_TEMP
-                self.tlaskan_data[1] = float(msg[1].decode('utf-8'))  # ATM_PRESS
-                self.tlaskan_data[0] = float(msg[2].decode('utf-8'))  # ATM_HUM
-                self.tlaskan_data[3] = round((float(msg[3].decode()) * 249.174 - self.zero_velocity), 3)  # DIF_PRESS
+                self.tlaskan_data[2] = round(float(msg[0].decode('utf-8')), 1)  # ATM_TEMP
+                self.tlaskan_data[1] = round(float(msg[1].decode('utf-8')))  # ATM_PRESS
+                self.tlaskan_data[0] = round(float(msg[2].decode('utf-8')), 1)  # ATM_HUM
+                self.tlaskan_data[3] = round((float(msg[3].decode()) * 100 - self.zero_velocity))  # DIF_PRESS
 
                 rh = self.tlaskan_data[0]
                 p_bar = self.tlaskan_data[1]

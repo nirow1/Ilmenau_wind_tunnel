@@ -11,6 +11,7 @@ class WindVelocityDonut(QChartView):
         donut_chart.legend().setVisible(False)
         donut_chart.setTitle("Velocity m/s")
         donut_chart.setAnimationOptions(QChart.AnimationOption.AllAnimations)
+        donut_chart.setBackgroundBrush(QColor("#fafafa"))
 
         min_size = 0.6
         max_size = 0.8

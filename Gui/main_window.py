@@ -3,7 +3,7 @@ import logging
 import csv
 import os
 
-from PySide6.QtWidgets import QMainWindow, QFileDialog
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QLabel
 from PySide6.QtCore import QSize, QTimer
 from PySide6.QtGui import QIcon, QPixmap
 from datetime import datetime
@@ -25,17 +25,20 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self._init_graphical_changes()
         self._disable_enable_buttons(False)
-        self.rho = 0
+        self.chart_count = 0
         self.average_speed = [0]
 
         # validator
-        self.ui.save_timer_le.setValidator(NumberValidator())
+        self.ui.save_timer_le.setValidator(NumberValidator(5))
+        self.ui.set_velocity_le.setValidator(NumberValidator(2, 50))
+        self.ui.set_temp_le.setValidator(NumberValidator(2, 60))
 
         # charts setup block
         self.wind_velocity_view = WindVelocityDonut()
         self.ui.speed_graph.addWidget(self.wind_velocity_view)
-        self.scale_chart = LineChart("draft", 120, (-1000 , 1000), ["shit"])
-        self.ui.scale_chart.addWidget(self.scale_chart)
+        self.temp_chart = LineChart("Temperatures", 120, (15 , 65),
+                                    ["Temp 3", "Temp 4", "Temp 5", "Temp 6"], line_count=4)
+        self.ui.scale_chart.addWidget(self.temp_chart)
 
         # device communication block
         self.velocity_tlaskan = TlaskanControl()
@@ -43,7 +46,7 @@ class MainWindow(QMainWindow):
         self.scales = ScaleControl()
 
         # data saving
-        self.data_to_save: List[Any] = [0.0 for _ in range(31)]
+        self.data_to_save: List[Any] = [0.0 for _ in range(12)]
         self.save_timer = QTimer()
         self.save_timer.timeout.connect(self._save_data)
         self.reset_save_file = False
@@ -70,47 +73,71 @@ class MainWindow(QMainWindow):
         # zero values
         self.ui.zero_values_btn.clicked.connect(self._zero_values_of_all_measurements)
 
-        self.ui.vfd_btn.clicked.connect(self._change_vfd)
-
         # slider value changed
-        self.ui.hz_sld.valueChanged.connect(self._hz_handling)
+        self.ui.set_velocity_btn.clicked.connect(self._hz_handling)
+
+        # heater
+        self.ui.enable_heater_btn.clicked.connect(lambda: self.logo.write_logo_state(0, b'\x01'))
+        self.ui.temp_reg_chb.clicked.connect(lambda: self.logo.write_logo_state(2, b'\x01'))
+        self.ui.set_temp_btn.clicked.connect(lambda: self.logo.write_logo_value(18 ,
+                                                                                int(self.ui.set_temp_le.text()) * 10))
+
+        # speed control
+        self.ui.set_velocity_btn.clicked.connect(lambda: self._hz_handling(int(self.ui.set_velocity_le.text()) * 20))
 
     def _handle_emits(self):
         self.velocity_tlaskan.TLASKAN_DATA.connect(self._handle_main_panel_data)
         self.logo.LOGO_DATA.connect(self._handle_logo_data)
-        self.scales.SCALE_MEASUREMENTS.connect(self._handle_scales)
 
     def _handle_main_panel_data(self, tlaskan_data):
         self.average_speed.append(tlaskan_data[4])
         if len(self.average_speed) > 5:
             self.average_speed.pop(0)
+
         if not self.ui.speed_avg_cb.isChecked():
             self.wind_velocity_view.set_wind_velocity(tlaskan_data[4])
             self.ui.wind_velocity_lbl.setText(f"V = {str(tlaskan_data[4])} m/s")
         else:
             self.wind_velocity_view.set_wind_velocity(round(statistics.mean(self.average_speed), 1))
             self.ui.wind_velocity_lbl.setText(f"V = {str(round(statistics.mean(self.average_speed), 1))} m/s")
+
+        self.ui.atm_temp_lbl.setText(f"Atm. temp.= {tlaskan_data[2]} °C")
         self.ui.velocity_pressure_lbl.setText(str(tlaskan_data[3]) + " Pa")
-        self.ui.temp_1_lbl.setText("T1 = " + str(tlaskan_data[2]))
-        self.ui.atmosphere_lbl.setText("Atm = " + str(tlaskan_data[1]))
-        self.ui.humidity_lbl.setText("Feuchtigkeit = " + str(tlaskan_data[0]))
-        self.rho = tlaskan_data[5]
+        self.ui.atmosphere_lbl.setText(f"Atm. P. = {str(tlaskan_data[1])} Pa")
+        self.ui.humidity_lbl.setText(f"Humidity = {str(tlaskan_data[0])} %")
         if self.saving:
             self.data_to_save[1:7] = tlaskan_data
 
     def _handle_logo_data(self, logo_data):
-        self.ui.temp_2_lbl.setText("T2 = " + str(logo_data[0]))
-        if self.saving:
-            self.data_to_save[7] = logo_data[0]
-            self.data_to_save[28] = logo_data[1]
+        for i in range(3,7):
+            temp_lbl: QLabel = self.ui.widget_34.findChild(QLabel, "temp_lbl_"+str(i))
+            temp_lbl.setText(f"T{str(i)} = {str(logo_data[7+i])} °C")
 
-    def _handle_scales(self, force):
-        self.ui.pressure_x.setText(f"Fx = {force[1]}N")
-        self.ui.pressure_y.setText(f"Fy = {force[2]}N")
-        self.ui.mz_lbl.setText(f"Mz = {force[3]} N.m")
-        self.scale_chart.update_chart(force[1:3])
+        self.ui.temp_lbl_1.setText(f"Boiler temp. = {str(logo_data[8])} °C")
+        self.ui.hz_lbl.setText(f"Hz = {str(logo_data[7] / 20)}")
+        self.ui.heater_power_lbl.setText(f"Heater Power = {logo_data[14]} %")
+
+        self.change_led(self.ui.led_1, "red", logo_data[0])
+        self.change_led(self.ui.led_2, "blue", logo_data[1])
+        self.change_led(self.ui.led_3, "green", logo_data[2])
+        self.change_led(self.ui.led_4, "green", logo_data[3])
+        self.change_led(self.ui.led_5, "red", logo_data[4])
+        self.change_led(self.ui.led_6, "red", logo_data[5])
+        self.change_led(self.ui.led_7, "green", logo_data[6])
+
+        if self.chart_count == 10:
+            self.temp_chart.update_chart(logo_data[10:14])
+            self.chart_count = 0
+        self.chart_count+=1
+
+        if logo_data[0] == 0 and logo_data[1] == 0 and logo_data[2] == 0 and logo_data[3] == 0 and logo_data[5] == 0:
+            self.ui.set_temp_btn.setEnabled(False)
+        else:
+            self.ui.set_temp_btn.setEnabled(True)
+
         if self.saving:
-            self.data_to_save[24:28] = force
+            self.data_to_save[7] = logo_data[8]
+            self.data_to_save[8:12] = logo_data[10:14]
 
     def _init_graphical_changes(self):
         self.ui.change_dir_btn.setIcon(QIcon("./App_data/dir_icon.png"))
@@ -118,9 +145,13 @@ class MainWindow(QMainWindow):
 
         self.ui.j4_logo_lbl.setPixmap(QPixmap('./App_data/4j_logo_150x50.png'))
 
+        for i in range(1,8):
+            led: QLabel = self.ui.widget_20.findChild(QLabel, "led_" + str(i))
+            led.setPixmap(QPixmap('./App_data/grey_led_15.png'))
+
         self.setWindowIcon(QIcon("./App_data/ico.png"))
         self.setWindowTitle("Wind Tunnel")
-        self.setMinimumSize(QSize(1500, 750))
+        self.setMinimumSize(QSize(1400, 790))
 
         self.ui.disconnect_tunnel_btn.hide()
         self.ui.stop_saving_btn.hide()
@@ -150,9 +181,6 @@ class MainWindow(QMainWindow):
         # velocity tlaskan connection
         self.velocity_tlaskan.start()
 
-        # scales connection
-        self.scales.start()
-
         self._disable_enable_buttons(True)
 
     def _disconnect_tunnel(self):
@@ -172,8 +200,10 @@ class MainWindow(QMainWindow):
 
     def _disable_enable_buttons(self, state: bool):
         self.ui.zero_values_btn.setEnabled(state)
-        self.ui.vfd_btn.setEnabled(state)
-        self.ui.hz_sld.setEnabled(state)
+        self.ui.set_velocity_btn.setEnabled(state)
+        self.ui.set_temp_btn.setEnabled(state)
+        self.ui.enable_heater_btn.setEnabled(state)
+        self.ui.temp_reg_chb.setEnabled(state)
 
     def _open_dir_dialog(self):
         options = QFileDialog(self).options()
@@ -184,9 +214,8 @@ class MainWindow(QMainWindow):
         self.scales.set_zero_values()
         self.velocity_tlaskan.set_zero_value()
 
-    def _hz_handling(self, hz_value):
-        self.ui.hz_lbl.setText(str(hz_value) + " %")
-        self.logo.write_logo_data(hz_value)
+    def _hz_handling(self, hz_value: int):
+        self.logo.write_logo_value(4, hz_value)
 
     def _get_file_path(self):
         file_path = self.ui.dir_path_line.text()
@@ -218,17 +247,17 @@ class MainWindow(QMainWindow):
         with open(self.save_file_path, 'a', newline="") as f:
             writer = csv.writer(f)
             if not exists:
-                writer.writerow(["Time", "%", "Pa", "oC", "Pa", "m.s-1", "kg.m-3", "oC", "N", "N", "N.m",
-                                 "mm", "mm", "m.s-1", "m.s-1"])
+                writer.writerow(["Time", "%", "Pa", "oC", "Pa", "m.s-1", "kg.m-3",
+                                 "boiler", "T3", "T4", "T5", "T6"])
             writer.writerow(self.data_to_save)
         self.save_count += 1
 
     def _set_save_name(self):
         self.save_file_name = self.ui.file_name_le.text()
 
-    def _change_vfd(self):
-        self.logo.change_vfd()
-        if self.ui.vfd_btn.text() == "Turn on VFD":
-            self.ui.vfd_btn.setText("Turn off VFD")
+    @staticmethod
+    def change_led(label: QLabel, color: str, state: bool):
+        if state:
+            label.setPixmap(QPixmap(f"./App_data/{color}_led_15.png"))
         else:
-            self.ui.vfd_btn.setText("Turn on VFD")
+            label.setPixmap(QPixmap('./App_data/grey_led_15.png'))
