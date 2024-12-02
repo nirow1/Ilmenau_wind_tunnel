@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'Ilmenau_wind_tunnelBqtnwA.ui'
+## Form generated from reading UI file 'Ilmenau_wind_tunnelprboeS.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.2
 ##
@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1294, 864)
+        MainWindow.resize(1306, 859)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setMinimumSize(QSize(0, 0))
@@ -243,47 +243,28 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10 = QHBoxLayout(self.widget_25)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.atmosphere_lbl = QLabel(self.widget_25)
+        self.atmosphere_lbl.setObjectName(u"atmosphere_lbl")
+        self.atmosphere_lbl.setMaximumSize(QSize(16777215, 16777215))
+        self.atmosphere_lbl.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+
+        self.horizontalLayout_10.addWidget(self.atmosphere_lbl)
+
         self.atm_temp_lbl = QLabel(self.widget_25)
         self.atm_temp_lbl.setObjectName(u"atm_temp_lbl")
-        self.atm_temp_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.atm_temp_lbl.setMaximumSize(QSize(200, 16777215))
+        self.atm_temp_lbl.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
 
         self.horizontalLayout_10.addWidget(self.atm_temp_lbl)
 
-        self.heater_power_lbl = QLabel(self.widget_25)
-        self.heater_power_lbl.setObjectName(u"heater_power_lbl")
-        self.heater_power_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.humidity_lbl = QLabel(self.widget_25)
+        self.humidity_lbl.setObjectName(u"humidity_lbl")
+        self.humidity_lbl.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
 
-        self.horizontalLayout_10.addWidget(self.heater_power_lbl)
-
-        self.temp_lbl_1 = QLabel(self.widget_25)
-        self.temp_lbl_1.setObjectName(u"temp_lbl_1")
-        self.temp_lbl_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.horizontalLayout_10.addWidget(self.temp_lbl_1)
+        self.horizontalLayout_10.addWidget(self.humidity_lbl)
 
 
         self.verticalLayout_8.addWidget(self.widget_25)
-
-        self.widget_26 = QWidget(self.widget_40)
-        self.widget_26.setObjectName(u"widget_26")
-        self.horizontalLayout_14 = QHBoxLayout(self.widget_26)
-        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
-        self.horizontalLayout_14.setContentsMargins(0, 0, 0, 0)
-        self.atmosphere_lbl = QLabel(self.widget_26)
-        self.atmosphere_lbl.setObjectName(u"atmosphere_lbl")
-        self.atmosphere_lbl.setMaximumSize(QSize(16777215, 16777215))
-        self.atmosphere_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.horizontalLayout_14.addWidget(self.atmosphere_lbl)
-
-        self.humidity_lbl = QLabel(self.widget_26)
-        self.humidity_lbl.setObjectName(u"humidity_lbl")
-        self.humidity_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.horizontalLayout_14.addWidget(self.humidity_lbl)
-
-
-        self.verticalLayout_8.addWidget(self.widget_26)
 
 
         self.verticalLayout.addWidget(self.widget_40)
@@ -309,6 +290,19 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout.addWidget(self.widget_42)
+
+        self.widget_27 = QWidget(self.widget)
+        self.widget_27.setObjectName(u"widget_27")
+        self.horizontalLayout_15 = QHBoxLayout(self.widget_27)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.speed_avg_cb = QCheckBox(self.widget_27)
+        self.speed_avg_cb.setObjectName(u"speed_avg_cb")
+        self.speed_avg_cb.setMaximumSize(QSize(150, 16777215))
+
+        self.horizontalLayout_15.addWidget(self.speed_avg_cb)
+
+
+        self.verticalLayout.addWidget(self.widget_27)
 
         self.widget_3 = QWidget(self.widget)
         self.widget_3.setObjectName(u"widget_3")
@@ -382,6 +376,59 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.widget_8)
 
+        self.widget_16 = QWidget(self.widget_10)
+        self.widget_16.setObjectName(u"widget_16")
+        self.widget_16.setMinimumSize(QSize(0, 41))
+        self.widget_16.setMaximumSize(QSize(16777215, 41))
+        self.horizontalLayout_13 = QHBoxLayout(self.widget_16)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalLayout_13.setContentsMargins(1, 3, 1, 3)
+        self.widget_30 = QWidget(self.widget_16)
+        self.widget_30.setObjectName(u"widget_30")
+        self.widget_30.setMinimumSize(QSize(0, 35))
+        self.widget_30.setMaximumSize(QSize(200, 16777215))
+        self.horizontalLayout_18 = QHBoxLayout(self.widget_30)
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
+        self.enable_heater_tg = AnimatedToggle(self.widget_30)
+        self.enable_heater_tg.setObjectName(u"enable_heater_tg")
+        self.enable_heater_tg.setMaximumSize(QSize(60, 16777215))
+
+        self.horizontalLayout_18.addWidget(self.enable_heater_tg)
+
+        self.label_13 = QLabel(self.widget_30)
+        self.label_13.setObjectName(u"label_13")
+        self.label_13.setMaximumSize(QSize(120, 16777215))
+
+        self.horizontalLayout_18.addWidget(self.label_13)
+
+
+        self.horizontalLayout_13.addWidget(self.widget_30)
+
+        self.widget_26 = QWidget(self.widget_16)
+        self.widget_26.setObjectName(u"widget_26")
+        self.widget_26.setMaximumSize(QSize(200, 16777215))
+        self.horizontalLayout_14 = QHBoxLayout(self.widget_26)
+        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
+        self.horizontalLayout_14.setContentsMargins(0, 0, 0, 0)
+        self.temp_reg_tg = AnimatedToggle(self.widget_26)
+        self.temp_reg_tg.setObjectName(u"temp_reg_tg")
+        self.temp_reg_tg.setMaximumSize(QSize(60, 16777215))
+
+        self.horizontalLayout_14.addWidget(self.temp_reg_tg)
+
+        self.label_11 = QLabel(self.widget_26)
+        self.label_11.setObjectName(u"label_11")
+        self.label_11.setMaximumSize(QSize(120, 16777215))
+
+        self.horizontalLayout_14.addWidget(self.label_11)
+
+
+        self.horizontalLayout_13.addWidget(self.widget_26)
+
+
+        self.verticalLayout_3.addWidget(self.widget_16)
+
         self.widget_11 = QWidget(self.widget_10)
         self.widget_11.setObjectName(u"widget_11")
         self.widget_11.setMinimumSize(QSize(0, 41))
@@ -389,102 +436,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5 = QHBoxLayout(self.widget_11)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(1, 3, 1, 3)
-        self.widget_33 = QWidget(self.widget_11)
-        self.widget_33.setObjectName(u"widget_33")
-        self.widget_33.setMinimumSize(QSize(225, 0))
-        self.horizontalLayout_7 = QHBoxLayout(self.widget_33)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
-
-        self.horizontalLayout_5.addWidget(self.widget_33)
-
-        self.widget_39 = QWidget(self.widget_11)
-        self.widget_39.setObjectName(u"widget_39")
-        self.widget_39.setMaximumSize(QSize(230, 16777215))
-        self.horizontalLayout_35 = QHBoxLayout(self.widget_39)
-        self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
-        self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
-        self.set_velocity_btn = QPushButton(self.widget_39)
-        self.set_velocity_btn.setObjectName(u"set_velocity_btn")
-        self.set_velocity_btn.setMinimumSize(QSize(0, 33))
-        self.set_velocity_btn.setMaximumSize(QSize(85, 16777215))
-
-        self.horizontalLayout_35.addWidget(self.set_velocity_btn)
-
-        self.set_velocity_le = QLineEdit(self.widget_39)
-        self.set_velocity_le.setObjectName(u"set_velocity_le")
-        self.set_velocity_le.setMinimumSize(QSize(0, 33))
-        self.set_velocity_le.setMaximumSize(QSize(60, 16777215))
-
-        self.horizontalLayout_35.addWidget(self.set_velocity_le)
-
-        self.label_7 = QLabel(self.widget_39)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setMaximumSize(QSize(50, 16777215))
-
-        self.horizontalLayout_35.addWidget(self.label_7)
-
-
-        self.horizontalLayout_5.addWidget(self.widget_39)
-
-        self.widget_50 = QWidget(self.widget_11)
-        self.widget_50.setObjectName(u"widget_50")
-        self.widget_50.setMaximumSize(QSize(120, 16777215))
-        self.horizontalLayout_36 = QHBoxLayout(self.widget_50)
-        self.horizontalLayout_36.setObjectName(u"horizontalLayout_36")
-        self.horizontalLayout_36.setContentsMargins(0, 0, 0, 0)
-        self.speed_avg_cb = QCheckBox(self.widget_50)
-        self.speed_avg_cb.setObjectName(u"speed_avg_cb")
-        self.speed_avg_cb.setMaximumSize(QSize(80, 16777215))
-
-        self.horizontalLayout_36.addWidget(self.speed_avg_cb)
-
-
-        self.horizontalLayout_5.addWidget(self.widget_50)
-
-
-        self.verticalLayout_3.addWidget(self.widget_11)
-
-        self.widget_16 = QWidget(self.widget_10)
-        self.widget_16.setObjectName(u"widget_16")
-        self.horizontalLayout_13 = QHBoxLayout(self.widget_16)
-        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
-        self.horizontalLayout_13.setContentsMargins(1, 3, 1, 3)
-        self.widget_31 = QWidget(self.widget_16)
-        self.widget_31.setObjectName(u"widget_31")
+        self.widget_15 = QWidget(self.widget_11)
+        self.widget_15.setObjectName(u"widget_15")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.widget_31.sizePolicy().hasHeightForWidth())
-        self.widget_31.setSizePolicy(sizePolicy2)
-        self.widget_31.setMinimumSize(QSize(0, 0))
-        self.widget_31.setMaximumSize(QSize(225, 16777215))
-        self.horizontalLayout_9 = QHBoxLayout(self.widget_31)
-        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
-        self.enable_heater_btn = QPushButton(self.widget_31)
-        self.enable_heater_btn.setObjectName(u"enable_heater_btn")
-        self.enable_heater_btn.setMinimumSize(QSize(0, 33))
-        self.enable_heater_btn.setMaximumSize(QSize(83, 16777215))
-
-        self.horizontalLayout_9.addWidget(self.enable_heater_btn)
-
-        self.temp_reg_chb = AnimatedToggle(self.widget_31)
-        self.temp_reg_chb.setObjectName(u"temp_reg_chb")
-        self.temp_reg_chb.setMaximumSize(QSize(60, 16777215))
-
-        self.horizontalLayout_9.addWidget(self.temp_reg_chb)
-
-        self.label_11 = QLabel(self.widget_31)
-        self.label_11.setObjectName(u"label_11")
-
-        self.horizontalLayout_9.addWidget(self.label_11)
-
-
-        self.horizontalLayout_13.addWidget(self.widget_31)
-
-        self.widget_15 = QWidget(self.widget_16)
-        self.widget_15.setObjectName(u"widget_15")
         sizePolicy2.setHeightForWidth(self.widget_15.sizePolicy().hasHeightForWidth())
         self.widget_15.setSizePolicy(sizePolicy2)
         self.widget_15.setMaximumSize(QSize(230, 16777215))
@@ -517,16 +473,39 @@ class Ui_MainWindow(object):
         self.horizontalLayout_11.addWidget(self.label_2)
 
 
-        self.horizontalLayout_13.addWidget(self.widget_15)
+        self.horizontalLayout_5.addWidget(self.widget_15)
 
-        self.widget_30 = QWidget(self.widget_16)
-        self.widget_30.setObjectName(u"widget_30")
-        self.widget_30.setMaximumSize(QSize(120, 16777215))
+        self.widget_39 = QWidget(self.widget_11)
+        self.widget_39.setObjectName(u"widget_39")
+        self.widget_39.setMaximumSize(QSize(230, 16777215))
+        self.horizontalLayout_35 = QHBoxLayout(self.widget_39)
+        self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
+        self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
+        self.set_velocity_btn = QPushButton(self.widget_39)
+        self.set_velocity_btn.setObjectName(u"set_velocity_btn")
+        self.set_velocity_btn.setMinimumSize(QSize(0, 33))
+        self.set_velocity_btn.setMaximumSize(QSize(85, 16777215))
 
-        self.horizontalLayout_13.addWidget(self.widget_30)
+        self.horizontalLayout_35.addWidget(self.set_velocity_btn)
+
+        self.set_velocity_le = QLineEdit(self.widget_39)
+        self.set_velocity_le.setObjectName(u"set_velocity_le")
+        self.set_velocity_le.setMinimumSize(QSize(0, 33))
+        self.set_velocity_le.setMaximumSize(QSize(60, 16777215))
+
+        self.horizontalLayout_35.addWidget(self.set_velocity_le)
+
+        self.label_7 = QLabel(self.widget_39)
+        self.label_7.setObjectName(u"label_7")
+        self.label_7.setMaximumSize(QSize(50, 16777215))
+
+        self.horizontalLayout_35.addWidget(self.label_7)
 
 
-        self.verticalLayout_3.addWidget(self.widget_16)
+        self.horizontalLayout_5.addWidget(self.widget_39)
+
+
+        self.verticalLayout_3.addWidget(self.widget_11)
 
 
         self.gridLayout.addWidget(self.widget_10, 1, 0, 1, 1)
@@ -537,10 +516,64 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.widget_3)
 
+        self.widget_33 = QWidget(self.widget)
+        self.widget_33.setObjectName(u"widget_33")
+        self.widget_33.setStyleSheet(u"QPushButton {\n"
+"    border-radius: 5px;\n"
+"    border: 1px solid #FF3636;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(230, 230, 230);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: #FF2626;\n"
+"}")
+        self.horizontalLayout_19 = QHBoxLayout(self.widget_33)
+        self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
+        self.horizontalLayout_19.setContentsMargins(0, 0, 0, 0)
+        self.stop_btn = QPushButton(self.widget_33)
+        self.stop_btn.setObjectName(u"stop_btn")
+        self.stop_btn.setMinimumSize(QSize(0, 34))
+        self.stop_btn.setMaximumSize(QSize(16777215, 40))
+
+        self.horizontalLayout_19.addWidget(self.stop_btn)
+
+
+        self.verticalLayout.addWidget(self.widget_33)
+
         self.widget_32 = QWidget(self.widget)
         self.widget_32.setObjectName(u"widget_32")
-        self.widget_32.setMinimumSize(QSize(0, 72))
-        self.widget_32.setMaximumSize(QSize(16777215, 100))
+        self.widget_32.setMinimumSize(QSize(0, 32))
+        self.widget_32.setMaximumSize(QSize(16777215, 89))
+        self.horizontalLayout_7 = QHBoxLayout(self.widget_32)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.widget_36 = QWidget(self.widget_32)
+        self.widget_36.setObjectName(u"widget_36")
+        self.widget_36.setMaximumSize(QSize(80, 16777215))
+
+        self.horizontalLayout_7.addWidget(self.widget_36)
+
+        self.heater_power_lbl = QLabel(self.widget_32)
+        self.heater_power_lbl.setObjectName(u"heater_power_lbl")
+        self.heater_power_lbl.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+
+        self.horizontalLayout_7.addWidget(self.heater_power_lbl)
+
+        self.widget_37 = QWidget(self.widget_32)
+        self.widget_37.setObjectName(u"widget_37")
+        self.widget_37.setMaximumSize(QSize(80, 16777215))
+
+        self.horizontalLayout_7.addWidget(self.widget_37)
+
+        self.temp_lbl_1 = QLabel(self.widget_32)
+        self.temp_lbl_1.setObjectName(u"temp_lbl_1")
+        self.temp_lbl_1.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+
+        self.horizontalLayout_7.addWidget(self.temp_lbl_1)
+
 
         self.verticalLayout.addWidget(self.widget_32)
 
@@ -836,22 +869,24 @@ class Ui_MainWindow(object):
         self.zero_values_btn.setText(QCoreApplication.translate("MainWindow", u"Zero Values", None))
         self.connect_tunel_btn.setText(QCoreApplication.translate("MainWindow", u"Connect to tunnel", None))
         self.disconnect_tunnel_btn.setText(QCoreApplication.translate("MainWindow", u"Disconnect from tunnel", None))
-        self.atm_temp_lbl.setText(QCoreApplication.translate("MainWindow", u"Atm. temp.= XX", None))
-        self.heater_power_lbl.setText(QCoreApplication.translate("MainWindow", u"Heater Power = XX", None))
-        self.temp_lbl_1.setText(QCoreApplication.translate("MainWindow", u"Boiler temp. = XX", None))
         self.atmosphere_lbl.setText(QCoreApplication.translate("MainWindow", u"Atm. P. = XX", None))
+        self.atm_temp_lbl.setText(QCoreApplication.translate("MainWindow", u"Atm. temp.= XX", None))
         self.humidity_lbl.setText(QCoreApplication.translate("MainWindow", u"Humidity = XX", None))
+        self.speed_avg_cb.setText(QCoreApplication.translate("MainWindow", u"Average velocoty", None))
         self.velocity_pressure_lbl.setText(QCoreApplication.translate("MainWindow", u"Pa", None))
         self.wind_velocity_lbl.setText(QCoreApplication.translate("MainWindow", u"ms", None))
         self.hz_lbl.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
+        self.enable_heater_tg.setText("")
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Enable boiler ", None))
+        self.temp_reg_tg.setText("")
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Temperature  reg.", None))
+        self.set_temp_btn.setText(QCoreApplication.translate("MainWindow", u"Set temp", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u00b0C", None))
         self.set_velocity_btn.setText(QCoreApplication.translate("MainWindow", u"Set velocity", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
-        self.speed_avg_cb.setText(QCoreApplication.translate("MainWindow", u"Average", None))
-        self.enable_heater_btn.setText(QCoreApplication.translate("MainWindow", u"En. Heater", None))
-        self.temp_reg_chb.setText("")
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Temp. reg.", None))
-        self.set_temp_btn.setText(QCoreApplication.translate("MainWindow", u"set temp", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u00b0C", None))
+        self.stop_btn.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
+        self.heater_power_lbl.setText(QCoreApplication.translate("MainWindow", u"Boiler power = XX", None))
+        self.temp_lbl_1.setText(QCoreApplication.translate("MainWindow", u"Boiler temp. = XX", None))
         self.temp_lbl_3.setText(QCoreApplication.translate("MainWindow", u"T3 = XX", None))
         self.temp_lbl_4.setText(QCoreApplication.translate("MainWindow", u"T4 = XX", None))
         self.temp_lbl_5.setText(QCoreApplication.translate("MainWindow", u"T5 = XX", None))

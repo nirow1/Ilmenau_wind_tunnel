@@ -9,11 +9,11 @@ from PySide6.QtGui import QIcon, QPixmap
 from datetime import datetime
 from typing import List, Any
 
-from Gui.Charts.wind_velocity_graph import WindVelocityDonut
+from Utils.custom_validator import NumberValidator, FloatValidator
 from Generated_qt.ui_Ilmenau_wind_tunnel import Ui_MainWindow
+from Gui.Charts.wind_velocity_graph import WindVelocityDonut
 from Device_communication.tlaskan import TlaskanControl
 from Device_communication.scales import ScaleControl
-from Utils.custom_validator import NumberValidator
 from Device_communication.logo import LogoControl
 from Gui.Charts.line_chart import LineChart
 
@@ -27,16 +27,17 @@ class MainWindow(QMainWindow):
         self._disable_enable_buttons(False)
         self.chart_count = 0
         self.average_speed = [0]
+        self.pump_on = 0
 
         # validator
         self.ui.save_timer_le.setValidator(NumberValidator(5))
-        self.ui.set_velocity_le.setValidator(NumberValidator(2, 50))
-        self.ui.set_temp_le.setValidator(NumberValidator(2, 60))
+        self.ui.set_velocity_le.setValidator(FloatValidator(2,1, 50))
+        self.ui.set_temp_le.setValidator(FloatValidator(2, 1, 60))
 
         # charts setup block
         self.wind_velocity_view = WindVelocityDonut()
         self.ui.speed_graph.addWidget(self.wind_velocity_view)
-        self.temp_chart = LineChart("Temperatures", 120, (15 , 65),
+        self.temp_chart = LineChart("Temperatures", 3600, (15 , 65),
                                     ["Temp 3", "Temp 4", "Temp 5", "Temp 6"], line_count=4)
         self.ui.scale_chart.addWidget(self.temp_chart)
 
@@ -73,17 +74,18 @@ class MainWindow(QMainWindow):
         # zero values
         self.ui.zero_values_btn.clicked.connect(self._zero_values_of_all_measurements)
 
-        # slider value changed
-        self.ui.set_velocity_btn.clicked.connect(self._hz_handling)
-
         # heater
-        self.ui.enable_heater_btn.clicked.connect(lambda: self.logo.write_logo_state(0, b'\x01'))
-        self.ui.temp_reg_chb.clicked.connect(lambda: self.logo.write_logo_state(2, b'\x01'))
+        self.ui.enable_heater_tg.clicked.connect(self._heater_on_off)
+        self.ui.temp_reg_tg.clicked.connect(lambda: self.logo.write_logo_state(2, b'\x01'))
         self.ui.set_temp_btn.clicked.connect(lambda: self.logo.write_logo_value(18 ,
-                                                                                int(self.ui.set_temp_le.text()) * 10))
+                                                                                int(float(self.ui.set_temp_le.text()) * 10)))
 
         # speed control
-        self.ui.set_velocity_btn.clicked.connect(lambda: self._hz_handling(int(self.ui.set_velocity_le.text()) * 20))
+        self.ui.set_velocity_btn.clicked.connect(lambda: self.logo.write_logo_value(
+                                                     4,
+                                                     int(float(self.ui.set_velocity_le.text()) * 20)))
+
+        self.ui.stop_btn.clicked.connect(self._stop_wind_tunnel)
 
     def _handle_emits(self):
         self.velocity_tlaskan.TLASKAN_DATA.connect(self._handle_main_panel_data)
@@ -115,7 +117,7 @@ class MainWindow(QMainWindow):
 
         self.ui.temp_lbl_1.setText(f"Boiler temp. = {str(logo_data[8])} °C")
         self.ui.hz_lbl.setText(f"Hz = {str(logo_data[7] / 20)}")
-        self.ui.heater_power_lbl.setText(f"Heater Power = {logo_data[14]} %")
+        self.ui.heater_power_lbl.setText(f"Boiler Power = {logo_data[14]} %")
 
         self.change_led(self.ui.led_1, "red", logo_data[0])
         self.change_led(self.ui.led_2, "blue", logo_data[1])
@@ -124,11 +126,15 @@ class MainWindow(QMainWindow):
         self.change_led(self.ui.led_5, "red", logo_data[4])
         self.change_led(self.ui.led_6, "red", logo_data[5])
         self.change_led(self.ui.led_7, "green", logo_data[6])
+        self.pump_on = logo_data[2]
 
         if self.chart_count == 10:
             self.temp_chart.update_chart(logo_data[10:14])
             self.chart_count = 0
         self.chart_count+=1
+
+        if self.ui.temp_reg_tg.isChecked() and not logo_data[3]:
+            self.ui.temp_reg_tg.setChecked(False)
 
         if logo_data[0] == 0 and logo_data[1] == 0 and logo_data[2] == 0 and logo_data[3] == 0 and logo_data[5] == 0:
             self.ui.set_temp_btn.setEnabled(False)
@@ -149,12 +155,14 @@ class MainWindow(QMainWindow):
             led: QLabel = self.ui.widget_20.findChild(QLabel, "led_" + str(i))
             led.setPixmap(QPixmap('./App_data/grey_led_15.png'))
 
-        self.setWindowIcon(QIcon("./App_data/ico.png"))
+        self.setWindowIcon(QIcon("./App_data/ico.ico"))
         self.setWindowTitle("Wind Tunnel")
         self.setMinimumSize(QSize(1400, 790))
 
         self.ui.disconnect_tunnel_btn.hide()
         self.ui.stop_saving_btn.hide()
+        self.ui.speed_avg_cb.setChecked(True)
+        self.ui.temp_reg_tg.setEnabled(False)
 
     def _start_saving(self):
         self.ui.start_saving_btn.hide()
@@ -190,7 +198,6 @@ class MainWindow(QMainWindow):
 
             self.velocity_tlaskan.disconnect()
             self.logo.disconnect()
-            self.scales.disconnect()
 
             self._stop_saving()
 
@@ -202,8 +209,8 @@ class MainWindow(QMainWindow):
         self.ui.zero_values_btn.setEnabled(state)
         self.ui.set_velocity_btn.setEnabled(state)
         self.ui.set_temp_btn.setEnabled(state)
-        self.ui.enable_heater_btn.setEnabled(state)
-        self.ui.temp_reg_chb.setEnabled(state)
+        self.ui.enable_heater_tg.setEnabled(state)
+        self.ui.stop_btn.setEnabled(state)
 
     def _open_dir_dialog(self):
         options = QFileDialog(self).options()
@@ -213,9 +220,6 @@ class MainWindow(QMainWindow):
     def _zero_values_of_all_measurements(self):
         self.scales.set_zero_values()
         self.velocity_tlaskan.set_zero_value()
-
-    def _hz_handling(self, hz_value: int):
-        self.logo.write_logo_value(4, hz_value)
 
     def _get_file_path(self):
         file_path = self.ui.dir_path_line.text()
@@ -254,6 +258,23 @@ class MainWindow(QMainWindow):
 
     def _set_save_name(self):
         self.save_file_name = self.ui.file_name_le.text()
+
+    def _heater_on_off(self):
+        self.ui.temp_reg_tg.setEnabled(self.ui.enable_heater_tg.isChecked())
+        if not self.ui.enable_heater_tg.isChecked():
+            self.ui.temp_reg_tg.setChecked(False)
+        self.logo.write_logo_state(0, b'\x01')
+
+    def _stop_wind_tunnel(self):
+        self.logo.write_logo_value(18,0)
+        self.logo.write_logo_value(4,0)
+        if self.pump_on:
+            self.logo.write_logo_state(0, b'\x01')
+            if self.ui.enable_heater_tg.isChecked():
+                self.ui.enable_heater_tg.setChecked(False)
+            if self.ui.temp_reg_tg.isChecked():
+                self.ui.temp_reg_tg.setChecked(False)
+                self.logo.write_logo_state(2, b'\x01')
 
     @staticmethod
     def change_led(label: QLabel, color: str, state: bool):
