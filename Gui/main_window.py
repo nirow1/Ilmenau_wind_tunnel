@@ -13,7 +13,6 @@ from Utils.custom_validator import NumberValidator, FloatValidator
 from Generated_qt.ui_Ilmenau_wind_tunnel import Ui_MainWindow
 from Gui.Charts.wind_velocity_graph import WindVelocityDonut
 from Device_communication.tlaskan import TlaskanControl
-from Device_communication.scales import ScaleControl
 from Device_communication.logo import LogoControl
 from Gui.Charts.line_chart import LineChart
 
@@ -44,7 +43,6 @@ class MainWindow(QMainWindow):
         # device communication block
         self.velocity_tlaskan = TlaskanControl()
         self.logo = LogoControl()
-        self.scales = ScaleControl()
 
         # data saving
         self.data_to_save: List[Any] = [0.0 for _ in range(12)]
@@ -218,7 +216,6 @@ class MainWindow(QMainWindow):
         self.ui.dir_path_line.setText(folder_path)
 
     def _zero_values_of_all_measurements(self):
-        self.scales.set_zero_values()
         self.velocity_tlaskan.set_zero_value()
 
     def _get_file_path(self):
